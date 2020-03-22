@@ -6,14 +6,15 @@ const cookieParser = require("cookie-parser");
 require("https").globalAgent.options.rejectUnauthorized = false;
 
 var app = express();
-app.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header(
-		"Access-Control-Allow-Headers",
-		"Origin, X-Requested-With, Content-Type, Accept"
-	);
-	next();
-});
+app.use(cors());
+// app.use(function(req, res, next) {
+// 	res.header("Access-Control-Allow-Origin", "*");
+// 	res.header(
+// 		"Access-Control-Allow-Headers",
+// 		"Origin, X-Requested-With, Content-Type, Accept"
+// 	);
+// 	next();
+// });
 
 const db = require("./connection/db");
 const routes = require("./routes/apiroutes");
