@@ -1,5 +1,7 @@
 const CaseData = require("../models/casedata");
 const AboutData = require("../models/aboutcorona");
+const LineData = require("../models/linechart");
+const moment = require("moment");
 
 const getCaseData = async req => {
 	const data = await CaseData.findAll({
@@ -63,8 +65,60 @@ const getAboutCrona = async req => {
 	return data;
 };
 
+const getLineChartData = async req => {
+	const data = await LineData.findAll({
+		raw: true
+	});
+	return data;
+};
+
+const cronJob = () => {
+	sumData().then(res => {
+		let sumArray = [];
+		let newCaseToday = null;
+		let yesterday = moment()
+			.subtract(1, "days")
+			.format("MM-DD-YYYY");
+		res.map(item => {
+			if (item.key == "Active Cases" || item.key == "Foreign Cases") {
+				sumArray.push(item.value);
+			}
+		});
+		let sum = sumArray.reduce((a, b) => {
+			return parseInt(a) + parseInt(b);
+		});
+		let obj = {
+			day: moment().format("MM-DD-YYYY"),
+			total: sum
+		};
+		LineData.findOne({
+			raw: true,
+			where: {
+				day: yesterday
+			}
+		})
+			.then(function(entry) {
+				newCaseToday = parseInt(sum) - parseInt(entry.total);
+				if (newCaseToday == 0) {
+					newCaseToday = entry.new;
+				}
+			})
+			.then(function() {
+				LineData.upsert({
+					day: obj.day,
+					new: newCaseToday,
+					total: obj.total
+				}).then(res => {
+					console.log(moment().format());
+				});
+			});
+	});
+};
+
 module.exports = {
 	getCaseData,
 	sumData,
-	getAboutCrona
+	getAboutCrona,
+	getLineChartData,
+	cronJob
 };

@@ -21,4 +21,14 @@ router.get("/intro", (req, res) => {
 	});
 });
 
+router.get("/linechart", (req, res) => {
+	services.getLineChartData().then(data => {
+		res.status(200).json(data);
+	});
+});
+
+router.get("/cron", (req, res) => {
+	services.cronJob();
+});
+
 module.exports = router;

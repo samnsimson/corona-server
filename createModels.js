@@ -1,12 +1,11 @@
 const SequelizeAuto = require("sequelize-auto");
-const auto = new SequelizeAuto("coronaupdateindia", "root", "", {
-	host: "localhost",
+const auto = new SequelizeAuto("harvea94_corona", "harvea94_sam", "W3lcome!", {
+	host: "harvestsavepeople.in",
 	dialect: "mysql",
-	prot: 3333,
 	additional: {
 		timestamps: false
 	},
-	tables: ["aboutcorona"]
+	tables: ["linechart"]
 });
 
 auto.run(function(err) {
