@@ -20,7 +20,7 @@ app.use("/api", routes);
 // ****CRON JOB**** //
 const services = require("./services/CaseService");
 cron.schedule("*/15 * * * *", function() {
-	services.cronJob();
+	services.cron_update_daily_count();
 });
 // ****CRON JOB**** //
 

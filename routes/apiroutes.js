@@ -27,8 +27,4 @@ router.get("/linechart", (req, res) => {
 	});
 });
 
-router.get("/cron", (req, res) => {
-	services.cronJob();
-});
-
 module.exports = router;

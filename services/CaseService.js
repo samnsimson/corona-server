@@ -72,46 +72,34 @@ const getLineChartData = async req => {
 	return data;
 };
 
-const cronJob = () => {
-	sumData().then(res => {
-		let sumArray = [];
-		let newCaseToday = null;
-		let yesterday = moment()
-			.subtract(1, "days")
-			.format("MM-DD-YYYY");
-		res.map(item => {
-			if (item.key == "Active Cases" || item.key == "Foreign Cases") {
-				sumArray.push(item.value);
-			}
+const cron_update_daily_count = async () => {
+	let newdatatoday = [];
+	let totalCount = 0;
+
+	const data = await LineData.findAll({
+		raw: true,
+		limit: 2,
+		attributes: ["day", "new", "total"],
+		order: [["updatedAt", "DESC"]]
+	});
+
+	let todaysNew =
+		data[0].total - data[1].total === 0
+			? data[1].new
+			: data[0].total - data[1].total;
+
+	sumData().then(sumdata => {
+		sumdata.map(data => {
+			if (data.key == "Active Cases" || data.key == "Foreign Cases")
+				totalCount += parseInt(data.value);
 		});
-		let sum = sumArray.reduce((a, b) => {
-			return parseInt(a) + parseInt(b);
-		});
-		let obj = {
+		LineData.upsert({
 			day: moment().format("MM-DD-YYYY"),
-			total: sum
-		};
-		LineData.findOne({
-			raw: true,
-			where: {
-				day: yesterday
-			}
-		})
-			.then(function(entry) {
-				newCaseToday = parseInt(sum) - parseInt(entry.total);
-				if (newCaseToday == 0) {
-					newCaseToday = entry.new;
-				}
-			})
-			.then(function() {
-				LineData.upsert({
-					day: obj.day,
-					new: newCaseToday,
-					total: obj.total
-				}).then(res => {
-					console.log(moment().format());
-				});
-			});
+			new: todaysNew,
+			total: totalCount
+		}).then(res => {
+			console.log(res);
+		});
 	});
 };
 
@@ -120,5 +108,5 @@ module.exports = {
 	sumData,
 	getAboutCrona,
 	getLineChartData,
-	cronJob
+	cron_update_daily_count
 };
