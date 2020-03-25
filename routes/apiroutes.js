@@ -27,4 +27,10 @@ router.get("/linechart", (req, res) => {
 	});
 });
 
+router.get("/new", (req, res) => {
+	services.getNewCaseData().then(data => {
+		res.status(200).json(data);
+	});
+});
+
 module.exports = router;

@@ -72,6 +72,14 @@ const getLineChartData = async req => {
 	return data;
 };
 
+const getNewCaseData = async req => {
+	const newCases = await LineData.findAll({
+		raw: true,
+		attributes: ["day", "new"]
+	});
+	return newCases;
+};
+
 const cron_update_daily_count = async () => {
 	let newdatatoday = [];
 	let totalCount = 0;
@@ -108,5 +116,6 @@ module.exports = {
 	sumData,
 	getAboutCrona,
 	getLineChartData,
-	cron_update_daily_count
+	cron_update_daily_count,
+	getNewCaseData
 };
