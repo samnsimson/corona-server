@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const services = require("../services/CaseService");
-const map = require("../json/states.json");
+const map = require("../json/india.json");
 
 router.get("/", (req, res) => {
 	services.getCaseData().then(data => {
@@ -31,6 +31,10 @@ router.get("/new", (req, res) => {
 	services.getNewCaseData().then(data => {
 		res.status(200).json(data);
 	});
+});
+
+router.get("/india", (req, res) => {
+	res.send(map);
 });
 
 module.exports = router;
