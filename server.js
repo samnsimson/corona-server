@@ -19,9 +19,16 @@ app.use("/api", routes);
 
 // ****CRON JOB**** //
 const services = require("./services/CaseService");
-cron.schedule("*/15 * * * *", function() {
-	services.cron_update_daily_count();
-});
+cron.schedule(
+	"*/15 * * * *",
+	function() {
+		services.cron_update_daily_count();
+	},
+	{
+		scheduled: true,
+		timezone: "Asia/Kolkata"
+	}
+);
 // ****CRON JOB**** //
 
 const PORT = process.env.PORT || 3333;
