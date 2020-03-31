@@ -19,19 +19,12 @@ app.use("/api", routes);
 
 // ****CRON JOB**** //
 const services = require("./services/CaseService");
-cron.schedule(
-	"*/15 * * * *",
-	function() {
-		services.cron_update_daily_count();
-	},
-	{
-		scheduled: true,
-		timezone: "Asia/Kolkata"
-	}
-);
+cron.schedule("*/15 * * * *", function() {
+	services.cron_update_daily_count();
+});
 // ****CRON JOB**** //
 
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, function() {
 	console.log(`server listening on port ${PORT}`);

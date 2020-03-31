@@ -42,10 +42,6 @@ const sumData = async req => {
 		raw: true,
 		attributes: [
 			[sequelize.fn("sum", sequelize.col("activecases")), "Active Cases"],
-			[
-				sequelize.fn("sum", sequelize.col("foreigncases")),
-				"Foreign Cases"
-			],
 			[sequelize.fn("sum", sequelize.col("curedcases")), "Cured Cases"],
 			[sequelize.fn("sum", sequelize.col("deadcases")), "Dead Cases"]
 		]
@@ -92,9 +88,9 @@ const cron_update_daily_count = async () => {
 	});
 
 	let todaysNew =
-		data[0].total - data[1].total === 0
-			? data[1].new
-			: data[0].total - data[1].total;
+		moment().format("MM-DD-YYYY") === data[0].day
+			? data[0].total - data[1].total
+			: 0;
 
 	sumData().then(sumdata => {
 		sumdata.map(data => {
